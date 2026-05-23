@@ -1,0 +1,23 @@
+# Lokální Claude Code metadata
+.claude/
+CLAUDE.md.local
+*.local
+
+# Citlivé soubory – API klíče, logy, markery
+env
+.env
+*.env
+*.key
+verified-key.sha256
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Editor backup files
+*.swp
+*~
+.DS_Store

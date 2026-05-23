@@ -1,0 +1,31 @@
+# AI Watcher – user preferences (NOT secrets).
+# Copy this file to ~/.config/ai-watcher/config and tweak.
+# Anything you leave commented out keeps its default.
+
+# ── Language of the reply ──────────────────────────────────────────────────
+# This string is inserted into the default system prompt: "Reply in {AI_LANG}".
+# Use the English name of the language so Claude understands it reliably.
+# Examples: English, Czech, German, Spanish, French, Polish, Japanese.
+# Default: English
+#
+# export AI_LANG="English"
+
+# ── Custom system prompt (advanced) ────────────────────────────────────────
+# If you set AI_SYSTEM_PROMPT, AI_LANG is ignored and your text is used
+# verbatim. Useful when you want a different persona, style, or domain focus.
+# Tip on what to write: see Anthropic's system prompt guide:
+#   https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/system-prompts
+#
+# export AI_SYSTEM_PROMPT="You are a senior frontend engineer reviewing UI mock-ups. Be terse."
+
+# ── Default question when none is provided ────────────────────────────────
+# Used by ai-watch.sh when called without --otazka.
+# Default: "What do you see? What should I do next?"
+#
+# export AI_DEFAULT_QUESTION="What do you see? What should I do next?"
+
+# ── Model selection (advanced) ─────────────────────────────────────────────
+# Override the model used for real queries. Default: claude-sonnet-4-6.
+# See available models: https://docs.anthropic.com/en/docs/about-claude/models
+#
+# export AI_MODEL="claude-sonnet-4-6"
