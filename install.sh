@@ -17,10 +17,14 @@ echo "════════════════════════�
 echo
 
 # 1) System packages
-echo "▸ Checking system packages (scrot, xterm, zenity, xdotool)..."
+echo "▸ Checking system packages (scrot, xterm, zenity, xdotool, python3-pip)..."
 MISSING=()
-for pkg in scrot xterm zenity xdotool; do
-    command -v "$pkg" >/dev/null 2>&1 || MISSING+=("$pkg")
+for pkg in scrot xterm zenity xdotool python3-pip; do
+    case "$pkg" in
+        python3-pip) cmd=pip3 ;;
+        *)           cmd="$pkg" ;;
+    esac
+    command -v "$cmd" >/dev/null 2>&1 || MISSING+=("$pkg")
 done
 
 if [ ${#MISSING[@]} -gt 0 ]; then
@@ -39,7 +43,7 @@ if python3 -c "import anthropic" 2>/dev/null; then
     echo "  ✓ Available"
 else
     echo "  Installing via pip..."
-    pip install --user --break-system-packages anthropic
+    python3 -m pip install --user --break-system-packages anthropic
 fi
 
 # 3) Copy scripts

@@ -38,32 +38,39 @@ ai_error() {
     command -v notify-send >/dev/null 2>&1 && notify-send -u critical "AI Watcher" "${msg:0:200}"
 }
 
-# ── Kontrola závislostí ────────────────────────────────────────────────────
-# Argumenty: seznam jmen APT balíčků, které tenhle skript potřebuje.
-# Vždy navíc kontroluje Python modul anthropic.
+# ── Dependency check ───────────────────────────────────────────────────────
+# Arguments: list of APT package names this script needs.
+# Always also checks for the Python anthropic module.
 ai_check_deps() {
     local missing=()
     local pkg
     for pkg in "$@"; do
-        # Mapování balíček → executable (většinou shoda jména)
+        # Package → executable mapping (usually identical)
         local cmd="$pkg"
         case "$pkg" in
             libnotify-bin) cmd="notify-send" ;;
+            python3-pip)   cmd="pip3" ;;
         esac
         command -v "$cmd" >/dev/null 2>&1 || missing+=("$pkg")
     done
 
     if [ ${#missing[@]} -gt 0 ]; then
         if ! sudo -n apt-get install -y "${missing[@]}" >/dev/null 2>&1; then
-            ai_error "Chybí balíčky: ${missing[*]}. Nainstaluj: sudo apt install ${missing[*]}"
+            ai_error "Missing packages: ${missing[*]}. Install via: sudo apt install ${missing[*]}"
             return 1
         fi
     fi
 
-    # Python modul anthropic
+    # Python anthropic module — ensure pip is available first
     if ! python3 -c "import anthropic" 2>/dev/null; then
-        if ! pip install --user --quiet --break-system-packages anthropic >/dev/null 2>&1; then
-            ai_error "Chybí Python modul 'anthropic'. Nainstaluj: pip install --user anthropic"
+        if ! command -v pip3 >/dev/null 2>&1; then
+            if ! sudo -n apt-get install -y python3-pip >/dev/null 2>&1; then
+                ai_error "pip3 is missing. Install via: sudo apt install python3-pip"
+                return 1
+            fi
+        fi
+        if ! python3 -m pip install --user --quiet --break-system-packages anthropic >/dev/null 2>&1; then
+            ai_error "Python module 'anthropic' is missing. Install via: python3 -m pip install --user anthropic"
             return 1
         fi
     fi
